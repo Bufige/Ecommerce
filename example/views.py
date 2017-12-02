@@ -5,43 +5,94 @@ from django.shortcuts import render,redirect
 from django.views.generic import TemplateView
 from django.contrib.auth.decorators import login_required
 
+from django.contrib.auth.models import User
 
+from django import forms
+from .forms import UserRegistrationForm,UserLoginForm
+from django.forms.models import model_to_dict
 from .models import Products
+from .cart.cart import Cart
 # Create your views here.
 
 
 
 class HomePageView(TemplateView):
 	def get(self, request, **kwargs):
-		#self.AddData()
+		
 
 		products = Products.objects.all()
+		cart = Cart(request)
 
-		return render(request,'index.html', {'Products': products})
-	def AddData(self):
-		#obj = Products.objects.create(title='colt 45 1911', imagePath='http://www.coltautos.com/images/1911_Navy_109967i.jpg' , description='Good weapon to shoot at niggas and faggots', price = 475)
-		pass
+		cart_total = self.request.session.get('cart_total',0)
+		self.request.session['cart_total'] = cart.total()		
+
+
+		return render(request,'index.html', {'Products': products})	
 
 class AboutPageView(TemplateView):
 	template_name = 'about.html'
+
+
+
+
 
 @login_required(login_url='/login')
 def ProfilePageView(request):
 	return render(request,'profile.html',context=None)
 
-def UserSignUp(request):
-	if request.method == 'POST':
-		form = UserCreationForm(request.POST)
+def UserLogin(request):
+	
+	if request.POST:
+		form = UserLoginForm(request.POST)
 		if form.is_valid():
-			form.save()
-			username = form.cleaned_data.get('username')
-			password = form.cleaned_data.get('password')
-			user = authenticate(username=username,password=password)
-			login(request,user)
-			return redirect('/')
+			userObj = form.cleaned_data
+			username = userObj['username']
+			password = userObj['password']
+
+			user = authenticate(username = username, password = password)
+
+			if user:
+				if user.is_active:
+					login(request,user)
+					return redirect('/')
 	else:
-		form = UserCreationForm()
-	return render(request,'registration/register.html', {'form' : form})
+		form = UserLoginForm()
+	
+	return render(request,'registration/login.html', {'form' : form})
 
 
 
+def UserSignUp(request):
+    if request.method == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            userObj = form.cleaned_data
+            username = userObj['username']
+            email =  userObj['email']
+            password =  userObj['password']
+            if not (User.objects.filter(username=username).exists() or User.objects.filter(email=email).exists()):
+                User.objects.create_user(username, email, password)
+                user = authenticate(username = username, password = password)
+                login(request, user)
+                return redirect('/')
+            
+    else:
+        form = UserRegistrationForm()
+
+    return render(request, 'registration/register.html', {'form' : form})
+
+
+
+def AddCart(request,id):
+	
+	product = Products.objects.filter(id=id).values('title','id','price')[0]
+	
+	cart = Cart(request)
+	
+	cart.add(product,update = True)	
+
+	#print(cart.get(id))
+
+
+
+	return redirect('/')
