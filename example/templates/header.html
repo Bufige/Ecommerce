@@ -24,6 +24,9 @@
             {% endif%}
           <span class="caret"></span></a>
           <ul class="dropdown-menu">
+            {% if user.is_superuser %}
+                <li><a href="/admin/">Admin area</a></li>          
+            {% endif %}
 
             {% if user.is_authenticated %} 
                 <li><a href="/profile/">Profile</a></li>
