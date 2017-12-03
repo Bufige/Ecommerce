@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^register/$', views.UserSignUp, name='register'),
     url(r'^logout/$', auth_views.logout,{'next_page': '/'},name='logout'),
     url(r'^addcart/(?P<id>[0-9]+)/$',views.AddCart,name='addcart'),
-    url(r'^cart/$', views.CartPageView, name='cart')
+    url(r'^cart/$', views.CartPageView, name='cart'),
+    url(r'^checkout/$',views.CheckOutPageView, name = 'checkout'),
 ]

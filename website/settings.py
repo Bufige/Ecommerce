@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'example.apps.ExampleConfig',
-    'bootstrap3',    
+    'bootstrap3',
+    'pagseguro',
 
 ]
 
@@ -134,3 +135,9 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 CART_SESSION_ID = 'cart'
+
+#pagseguro config
+PAGSEGURO_EMAIL = 'bufige1434@gmail.com'
+PAGSEGURO_TOKEN = '5BC77FEBBE334DA4B3FD5DF89A958E8A'
+PAGSEGURO_SANDBOX = True
+PAGSEGURO_LOG_IN_MODEL = True 

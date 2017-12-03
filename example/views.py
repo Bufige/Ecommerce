@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 
 from django import forms
-from .forms import UserRegistrationForm,UserLoginForm
+from .forms import *
 from django.forms.models import model_to_dict
 from .models import Products
 from .cart.cart import Cart
@@ -25,6 +25,7 @@ class HomePageView(TemplateView):
 
 		cart_total = self.request.session.get('cart_total',0)
 		self.request.session['cart_total'] = cart.total()		
+
 
 
 		return render(request,'index.html', {'products': products})	
@@ -91,14 +92,25 @@ def AddCart(request,id):
 	
 	cart.add(product,update = True)	
 
-	#print(cart.get(id))
-
-
 
 	return redirect('/')
 
 def CartPageView(request):
 
 	cart = Cart(request)
-	print(cart.totalprice())
 	return render(request, 'cart.html', {'products' : cart.getall(), 'totalprice' : cart.totalprice() })
+
+
+@login_required(login_url='/login')
+def CheckOutPageView(request):
+	if request.method == 'POST':
+		form = CheckOutForm()
+		if form.is_valid():
+			userObj = form.cleaned_data
+			username = userObj['username']
+			email = userObj['email']
+			creditcard = userObj['creditcard']
+	else:
+		form = CheckOutForm()	
+	cart = Cart(request)
+	return render(request, 'checkout.html', {'form' : form , 'products' : cart.getall(), 'totalprice' : cart.totalprice() })
