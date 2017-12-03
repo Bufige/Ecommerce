@@ -27,7 +27,7 @@ class HomePageView(TemplateView):
 		self.request.session['cart_total'] = cart.total()		
 
 
-		return render(request,'index.html', {'Products': products})	
+		return render(request,'index.html', {'products': products})	
 
 class AboutPageView(TemplateView):
 	template_name = 'about.html'
@@ -96,3 +96,9 @@ def AddCart(request,id):
 
 
 	return redirect('/')
+
+def CartPageView(request):
+
+	cart = Cart(request)
+	print(cart.totalprice())
+	return render(request, 'cart.html', {'products' : cart.getall(), 'totalprice' : cart.totalprice() })

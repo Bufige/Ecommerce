@@ -10,6 +10,7 @@ class Cart(object):
 
 
 
+
 		if not cart:
 			cart = self.session[settings.CART_SESSION_ID] = {}
 		else:
@@ -36,13 +37,22 @@ class Cart(object):
 		if product_id in self.cart:
 			return self.cart[product_id]
 		return None
+
+	def getall(self):
+		return self.cart.values()
+
 	def total(self):
 		amount = 0
-
 		for item in self.cart.values():			
-			amount += item['quantity']
-			#print(item['quantity'])
+			amount += item['quantity']			
 		return amount
+
+	def totalprice(self):
+		totalprice = 0
+		for item in self.cart.values():
+			totalprice += item['quantity'] * Decimal(item['price'])
+		return totalprice
+		
 	def clear(self):
 		del self.session[settings.CART_SESSION_ID]
 		self.session.modified = True
