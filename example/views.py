@@ -131,7 +131,7 @@ def CheckOutPageView(request):
 	return render(request, 'checkout.html', {'form' : form , 'products' : cart.getall(), 'totalprice' : cart.totalprice() })
 
 
-#@login_required(login_url='/login')
+@login_required(login_url='/login')
 def SuccessPageView(request):
 	cart = Cart(request)
 	if cart.total() == 0:
