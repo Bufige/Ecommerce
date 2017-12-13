@@ -1,10 +1,9 @@
-from django.conf.urls import url
+from django.conf.urls import url , include
 from example import views
 from django.contrib.auth import views as auth_views 
 
 urlpatterns = [
-    url(r'^$', views.HomePageView.as_view()),
-    url(r'^about/$',views.AboutPageView.as_view()),
+    url(r'^$', views.HomePageView.as_view(), name = 'home'),    
     url(r'^profile/',views.ProfilePageView,name='profile'),
     url(r'^login/$', views.UserLogin,name='login'),
     url(r'^register/$', views.UserSignUp, name='register'),
@@ -12,4 +11,5 @@ urlpatterns = [
     url(r'^addcart/(?P<id>[0-9]+)/$',views.AddCart,name='addcart'),
     url(r'^cart/$', views.CartPageView, name='cart'),
     url(r'^checkout/$',views.CheckOutPageView, name = 'checkout'),
+    url(r'^success/', views.SuccessPageView, name='success'),
 ]
